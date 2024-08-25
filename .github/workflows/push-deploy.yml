@@ -36,6 +36,17 @@ jobs:
           MY_VARIABLE: ${{ secrets.MY_VARIABLE }}
           ANOTHER_VARIABLE: ${{ env.ANOTHER_VARIABLE }}
 
+      - name: write and copy the files
+        run: |
+          << EOF
+          
+            cd {{ build.source }}
+            echo "MY_VARIABLE='${{ secrets.MY_VARIABLE }}'" > var.config
+            echo "ANOTHER_VARIABLE='${{ env.ANOTHER_VARIABLE }}'" >> var.config
+            chmod +x var.config
+          EOF
+    
+
       - name: Run the script on EC2 that uses the variables
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
